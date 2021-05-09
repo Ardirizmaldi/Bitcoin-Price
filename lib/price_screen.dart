@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:bitcoin_ticker/coin_data.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PriceScreen extends StatefulWidget {
@@ -6,6 +10,48 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
+  String selectedValue = 'USD';
+  List<DropdownMenuItem<String>> dropdownItems = [];
+  List<Text> pickerItems = [];
+
+  DropdownButton<String> androidDropdown() {
+    for (String currency in currenciesList) {
+      var newItem = DropdownMenuItem(
+        child: Text('$currency'),
+        value: currency,
+      );
+      dropdownItems.add(newItem);
+    }
+
+    return DropdownButton<String>(
+      value: selectedValue,
+      items: dropdownItems,
+      onChanged: (value) {
+        setState(() {
+          selectedValue = value;
+        });
+      },
+    );
+  }
+
+  CupertinoPicker iosPicker() {
+    for (String currency in currenciesList) {
+      var newItem = Text('$currency');
+      pickerItems.add(newItem);
+    }
+
+    return CupertinoPicker(
+      backgroundColor: Colors.lightBlue,
+      itemExtent: 35.0,
+      onSelectedItemChanged: (index) {
+        setState(() {
+          selectedValue = currenciesList[index];
+        });
+      },
+      children: pickerItems,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +73,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 BTC = ? $selectedValue',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -42,7 +88,7 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: null,
+            child: Platform.isIOS ? iosPicker() : androidDropdown(),
           ),
         ],
       ),
