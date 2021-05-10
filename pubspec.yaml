@@ -10,6 +10,8 @@ dependencies:
     sdk: flutter
 
   cupertino_icons:
+  http:
+  flutter_spinkit: ^4.1.2
 
 dev_dependencies:
   flutter_test:
